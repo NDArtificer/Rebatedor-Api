@@ -1,0 +1,80 @@
+AMBIENTE1:
+  IP: "192.168.0.1"
+  PORTA: 8080
+  PREFIXO: "/api/v1"
+  
+  CLIENTES:
+    CLIENTE_A:
+      PORTA_CLIENTE: 3000
+    CLIENTE_B:
+      PORTA_CLIENTE: 3001
+    CLIENTE_C:
+      PORTA_CLIENTE: 3002
+  
+  DATABASE:
+    POSTGRES:
+      host: localhost
+      port: 5432
+      user: postgres
+      password: 123456
+      database: app
+
+    SQLSERVER:
+      server: localhost
+      user: sa
+      password: Password123
+      database: app
+
+AMBIENTE2:
+  IP: "192.168.0.2"
+  PORTA: 8080
+  PREFIXO: "/api/v1"
+  
+  CLIENTES:
+    CLIENTE_A:
+      PORTA_CLIENTE: 3010
+    CLIENTE_B:
+      PORTA_CLIENTE: 3011
+    CLIENTE_C:
+      PORTA_CLIENTE: 3012
+  
+  DATABASE:
+    POSTGRES:
+      host: localhost
+      port: 5432
+      user: postgres
+      password: 123456
+      database: app
+
+    SQLSERVER:
+      server: localhost
+      user: sa
+      password: Password123
+      database: app
+
+AMBIENTE3:
+  IP: "192.168.0.3"
+  PORTA: 8080
+  PREFIXO: "/api/v1"
+  
+  CLIENTES:
+    CLIENTE_A:
+      PORTA_CLIENTE: 3020
+    CLIENTE_B:
+      PORTA_CLIENTE: 3021
+    CLIENTE_C:
+      PORTA_CLIENTE: 3022
+  
+  DATABASE:
+    POSTGRES:
+      host: localhost
+      port: 5432
+      user: postgres
+      password: 123456
+      database: app
+
+    SQLSERVER:
+      server: localhost
+      user: sa
+      password: Password123
+      database: app
