@@ -17,23 +17,16 @@ const plan = planner.plan(desired, running);
 console.log("\n========== DEPLOY PLAN ==========\n");
 
 plan.create.forEach(a => {
-
     console.log("➕", a.name);
-
 });
 
 plan.start.forEach(a => {
-
     console.log("▶", a.name);
-
 });
 
 plan.restart.forEach(item => {
-
     console.log("♻", item.app.name);
-
     item.changes.forEach(change => {
-
         console.log(
             `    ${change.field}: ${change.oldValue} -> ${change.newValue}`
         );
@@ -43,17 +36,12 @@ plan.restart.forEach(item => {
 });
 
 plan.remove.forEach(a => {
-
     console.log("🗑", a.name);
-
 });
 
 plan.unchanged.forEach(a => {
-
     console.log("✔", a.name);
-
 });
 
 console.log();
-
 pm2.disconnect();

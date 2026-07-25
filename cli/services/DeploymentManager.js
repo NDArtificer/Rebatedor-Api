@@ -5,6 +5,7 @@ import DeploymentPlanner from "./DeploymentPlanner.js";
 import DeploymentOptions from "../models/DeploymentOptions.js";
 import ProcessStatusMapper from "../mappers/ProcessStatusMapper.js";
 import TableRenderer from "../ui/TableRender.js";
+import FileService from "./FileService.js";
 
 export default class DeploymentManager {
 
@@ -42,7 +43,7 @@ export default class DeploymentManager {
             if (this.options.save) {
                 await this.pm2.save();
             }
-            this.renderer.render("Process Status", this.mapper.mapAll(await this.pm2.list()));
+            await this.status();
             this.showReport(report);
 
         }
@@ -50,6 +51,49 @@ export default class DeploymentManager {
             this.pm2.disconnect();
         }
 
+    }
+
+   async restart() {
+        try {
+            await this.pm2.connect();
+            const apps = await this.pm2.list();
+            for (const app of apps) {
+                if (app.name.endsWith("-API")) {
+                    console.log(`Reiniciando ${app.name}`);
+                    await this.pm2.restart(app.name);
+                }
+
+            }
+            await this.status();
+        } finally {
+            await this.pm2.disconnect();
+        }
+    }
+
+    async status() {
+        try {
+            await this.pm2.connect();
+            const apps = await this.pm2.list();
+            this.renderer.render("Process Status", this.mapper.mapAll(apps));
+        } finally {
+            await this.pm2.disconnect();
+        }
+    }
+
+    async stop() {
+        try {
+            await this.pm2.connect();
+            const apps = await this.pm2.list();
+            for (const app of apps) {
+                console.log(`Parando ${app.name}`);
+                await this.pm2.stop(app.name);
+            }
+            await this.status();
+        } finally {
+            const fileService = new FileService();
+            fileService.removeDirectory("./logs");
+           await this.pm2.disconnect();
+        }
     }
 
     showReport(report) {
