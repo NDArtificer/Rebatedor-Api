@@ -1,33 +1,24 @@
-import DeploymentAction from "../models/DeploymentAction.js";
+import GenericAction from "./GenericAction.js";
 
-export default class RestartAction extends DeploymentAction {
+export default class RestartAction extends GenericAction {
 
     constructor(app, changes) {
 
-        super(app);
+        super(app,
+            "♻",
+            (name) => `Recriando ${name}`,
+            async (pm2, app) => await pm2.recreate(app)
+        );
 
         this.changes = changes;
 
     }
 
     print(logger) {
-
-        logger.action("♻", `Recriando ${this.name}`);
-
+        super.print(logger);
         this.changes.forEach(change => {
-
-            logger.info(
-                `${change.field}: ${change.oldValue} -> ${change.newValue}`
-            );
-
+            logger.info(`${change.field}: ${change.oldValue} -> ${change.newValue}`);
         });
-
-    }
-
-    async execute(pm2) {
-
-        await pm2.recreate(this.app);
-
     }
 
 }

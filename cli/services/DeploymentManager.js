@@ -1,4 +1,4 @@
-import Logger from "./Logger.js";
+import Logger from '../../Logger.js';;
 import Pm2Service from "./Pm2Service.js";
 import EcosystemGenerator from "./EcosystemGenerator.js";
 import DeploymentPlanner from "./DeploymentPlanner.js";

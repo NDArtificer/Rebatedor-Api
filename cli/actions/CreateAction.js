@@ -1,17 +1,11 @@
-import DeploymentAction from "../models/DeploymentAction.js";
+import GenericAction from "./GenericAction.js";
 
-export default class CreateAction extends DeploymentAction {
-
-    print(logger) {
-
-        logger.action("➕", `Criando ${this.name}`);
-
+export default class CreateAction extends GenericAction {
+    constructor(app) {
+        super(app,
+            "➕",
+            (name) => `Criando ${name}`,
+            async (pm2, app) => await pm2.create(app)
+        );
     }
-
-    async execute(pm2) {
-
-        await pm2.create(this.app);
-
-    }
-
 }

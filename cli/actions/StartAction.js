@@ -1,17 +1,11 @@
-import DeploymentAction from "../models/DeploymentAction.js";
+import GenericAction from "./GenericAction.js";
 
-export default class StartAction extends DeploymentAction {
-
-    print(logger) {
-
-        logger.action("▶", `Iniciando ${this.name}`);
-
+export default class StartAction extends GenericAction {
+    constructor(app) {
+        super(app,
+            "▶",
+            (name) => `Iniciando ${name}`,
+            async (pm2, app) => await pm2.startExisting(app.name)
+        );
     }
-
-    async execute(pm2) {
-
-        await pm2.startExisting(this.name);
-
-    }
-
 }

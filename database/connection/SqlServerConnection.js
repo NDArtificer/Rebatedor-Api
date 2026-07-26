@@ -1,9 +1,10 @@
 import sql from "mssql";
+import BaseConnection from "./BaseConnection.js";
 
-export default class SqlServerConnection {
+export default class SqlServerConnection extends BaseConnection {
 
-    async connect(config) {
-        return await sql.connect(config);
+    constructor() {
+        super((config) => sql.connect(config));
     }
 
 }

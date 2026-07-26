@@ -12,57 +12,31 @@ export default class ProcessLifecycleService {
 
     async start(apps) {
 
-        await this.executor.execute(
-
-            apps,
-
-            this.pm2.startExisting.bind(this.pm2),
-
-            "Iniciando"
-
-        );
+        await this.runAction("Iniciando", this.pm2.startExisting.bind(this.pm2), apps);
 
     }
 
     async restart(apps) {
 
-        await this.executor.execute(
-
-            apps,
-
-            this.pm2.restart.bind(this.pm2),
-
-            "Reiniciando"
-
-        );
+        await this.runAction("Reiniciando", this.pm2.restart.bind(this.pm2), apps);
 
     }
 
     async stop(apps) {
 
-        await this.executor.execute(
-
-            apps,
-
-            this.pm2.stop.bind(this.pm2),
-
-            "Parando"
-
-        );
+        await this.runAction("Parando", this.pm2.stop.bind(this.pm2), apps);
 
     }
 
     async remove(apps) {
 
-        await this.executor.execute(
+        await this.runAction("Removendo", this.pm2.delete.bind(this.pm2), apps);
 
-            apps,
+    }
 
-            this.pm2.delete.bind(this.pm2),
+    async runAction(actionName, callback, apps) {
 
-            "Removendo"
-
-        );
+        await this.executor.execute(apps, callback, actionName);
 
     }
 

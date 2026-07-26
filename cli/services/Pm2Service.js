@@ -89,9 +89,6 @@ export default class Pm2Service {
     }
 
     async stop(name) {
-        console.log("STOP:", name);
-        console.log("TYPE:", typeof name);
-
         return new Promise((resolve, reject) => {
             pm2.stop(name, err => {
                 if (err) {
