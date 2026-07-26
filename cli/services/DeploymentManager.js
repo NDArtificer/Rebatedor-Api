@@ -8,6 +8,9 @@ import ProcessStatusService from "./ProcessStatusService.js";
 import TableRenderer from "../ui/TableRender.js";
 import DeploymentOptions from "../models/DeploymentOptions.js";
 import FileService from "./FileService.js";
+import LifecycleExecutor from "../models/LifecycleExecutor.js";
+import DeploymentProgress from "../models/DeploymentProgress.js";
+import DeploymentProgressRenderer from "../ui/DeploymentProgressRenderer.js";
 
 export default class DeploymentManager {
 
@@ -32,7 +35,6 @@ export default class DeploymentManager {
             const running = await this.pm2.list();
             const plan = this.planner.plan(desired, running);
             const report = await this.executor.execute(plan, this.options);
-            await this.status();
             if (report)
                 this.showReport(report);
 
@@ -45,12 +47,11 @@ export default class DeploymentManager {
     async restart() {
         await this.pm2.connect();
         try {
-            const apps = await this.pm2.list();
-            await this.lifecycle.restart(
-                apps.filter( app => app.name.endsWith("-API"))
-            );
-            await this.status();
-        } finally {
+            const apps = (await this.pm2.list())
+                .filter(app => app.name.endsWith("-API"));
+            await this.lifecycle.restart(apps);
+        }
+        finally {
             this.pm2.disconnect();
         }
 
@@ -59,33 +60,37 @@ export default class DeploymentManager {
     async stop() {
         await this.pm2.connect();
         try {
-            const apps = await this.pm2.list();
-            await this.lifecycle.stop(
-                apps.filter( app => app.name.endsWith("-API"))
-            );
+            const apps = (await this.pm2.list())
+                .filter(app => app.name.endsWith("-API"));
+            await this.lifecycle.stop(apps);
             this.fileService.removeDirectory("./logs");
-            await this.status();
-        } finally {
+        }
+        finally {
             this.pm2.disconnect();
         }
 
     }
 
     async status() {
-        await this.statusService.render(
-            this.renderer,
-            "PROCESS STATUS"
-        );
+        try {
+            await this.statusService.render(
+                this.renderer,
+                "PROCESS STATUS"
+            );
+        } finally {
+            this.pm2.disconnect();
+        }
 
     }
 
     showReport(report) {
-        this.logger.title("RESUMO");
+        this.logger.title("                                        RESUMO");
         this.logger.success(`Executadas : ${report.success.length}`);
         if (report.failed.length) {
             this.logger.error(`Falhas : ${report.failed.length}`);
         }
         this.logger.info(`Tempo : ${report.duration} ms`);
+        this.logger.line();
     }
 
 }
